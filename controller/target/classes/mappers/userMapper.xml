@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.zerock.mapper.UserMapper">
+
+<insert id="create">
+    insert into tbl_user (uid, upw, uname, uemail)
+    values(#{uid}, PASSWORD(#{upw}), #{uname}, #{uemail})
+</insert>
+
+<select id="idCheck" resultType="UserVO">
+select uid from tbl_user where uid = #{uid}
+</select>
+
+<update id="updatePw" parameterType="UserVO"> 
+    update tbl_user
+    set
+        upw = PASSWORD(#{upw})
+    where
+        uid = #{uid}
+</update>
+
+<update id="updateInfo" parameterType="UserVO"> 
+    update tbl_user
+    set
+       uname =#{uname}, uemail = #{uemail}, team = #{team}
+    where
+        uid = #{uid}
+</update>
+
+
+<select id="login" resultType="UserVO">
+select uid, upw, uname, uemail, regdate, ugrade, team from tbl_user where uid = #{uid} and upw = PASSWORD(#{upw}) 
+</select>
+
+<update id="keepLogin">
+update tbl_user set sessionKey = #{sessionId}, sessionLimit = #{next} where uid = #{uid}
+</update>
+
+<select id="checkUserWithSesisonKey" resultType="UserVO">
+select * from tbl_user where sessionKey = #{value} and sessionLimit > now()
+</select>
+
+</mapper>
